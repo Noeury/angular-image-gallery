@@ -5,15 +5,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-upload-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './upload-form.component.html',
   styleUrl: './upload-form.component.css',
 })
 export class UploadFormComponent {
+  constructor(private router: Router) {}
+
   form = new FormGroup({
     fileSource: new FormControl('', Validators.required),
   });
@@ -45,6 +48,7 @@ export class UploadFormComponent {
           localStorage.setItem('images', JSON.stringify(json));
         };
         reader.readAsDataURL(file);
+        this.router.navigate(['/gallery']);
       }
     } catch (error) {}
   }
