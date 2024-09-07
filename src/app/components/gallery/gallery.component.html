@@ -4,11 +4,12 @@
         @for(img of images; let i = $index; track i){
         <div class="relative group">
             <a href="javascript:void(0)"
-                class="absolute top-2 right-2 bg-red-500 text-white p-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                class="absolute top-2 right-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 (click)="deleteImage(i)">
                 X
             </a>
-            <img class="h-auto max-w-full rounded-lg" [src]="img.src" alt="">
+            <img class="h-auto max-w-full rounded-lg cursor-pointer" [src]="img.src" (click)="openImageDetail(img.src)"
+                alt="">
         </div>
         }
     </div>
@@ -96,5 +97,9 @@
                 py-2.5 text-center me-2 mb-2">Add
             new</a>
     </div>
+    }
+    @if(selectedImage){
+    <app-image-detail [imageSrc]="selectedImage" (close)="closeImageDetail()">
+    </app-image-detail>
     }
 </div>

@@ -46,11 +46,13 @@ export class UploadFormComponent {
           json.push(data);
 
           localStorage.setItem('images', JSON.stringify(json));
+          this.router.navigate(['/gallery']);
         };
         reader.readAsDataURL(file);
-        this.router.navigate(['/gallery']);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   }
 
   onSubmit(): void {
