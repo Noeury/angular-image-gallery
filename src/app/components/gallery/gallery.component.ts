@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { ImageDetailComponent } from '../image-detail/image-detail.component';
 import { filter } from 'rxjs';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-gallery',
@@ -11,14 +12,17 @@ import { filter } from 'rxjs';
   styleUrl: './gallery.component.css',
 })
 export class GalleryComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private localStorageService: LocalStorageService
+  ) {}
+
   images: { name: string; src: string }[] = [];
   selectedImage: string | null = null;
 
   ngOnInit(): void {
     this.loadImages();
 
-    // Listen for router navigation events to reload images when navigating to /gallery
     this.router.events
       .pipe(
         filter(
@@ -32,7 +36,7 @@ export class GalleryComponent implements OnInit {
   }
 
   loadImages(): void {
-    const imageArray = JSON.parse(localStorage.getItem('images') ?? '[]');
+    const imageArray = this.localStorageService.loadImages();
     this.images = imageArray.map(
       (img: { id: string; mimeType: string; body: string }) => {
         const url = `${img.mimeType},${img.body}`;
@@ -50,10 +54,6 @@ export class GalleryComponent implements OnInit {
   }
 
   deleteImage(index: number) {
-    this.images = this.images
-      .map((img, i) => (i === index ? null : img))
-      .filter((img) => img !== null);
-
     const imageArrayForStorage = this.images.map((img) => {
       const [mimeType, body] = img.src.split(',');
       return {
@@ -63,6 +63,15 @@ export class GalleryComponent implements OnInit {
       };
     });
 
-    localStorage.setItem('images', JSON.stringify(imageArrayForStorage));
+    const updatedImages = this.localStorageService.deleteImage(
+      index,
+      imageArrayForStorage
+    );
+    this.images = updatedImages.map(
+      (img: { id: string; mimeType: string; body: string }) => ({
+        name: img.id,
+        src: `${img.mimeType},${img.body}`,
+      })
+    );
   }
 }

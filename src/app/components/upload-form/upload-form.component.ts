@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-upload-form',
@@ -15,7 +16,10 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './upload-form.component.css',
 })
 export class UploadFormComponent {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private localStorageService: LocalStorageService
+  ) {}
 
   form = new FormGroup({
     fileSource: new FormControl('', Validators.required),
@@ -33,19 +37,7 @@ export class UploadFormComponent {
           const head = (e.target?.result as string).split(',')[0];
           const base64String = (e.target?.result as string).split(',')[1];
 
-          const id = `image_${Date.now()}`;
-
-          const data = {
-            id: id,
-            mimeType: head,
-            body: base64String,
-          };
-
-          const json = JSON.parse(localStorage.getItem('images') || '[]');
-
-          json.push(data);
-
-          localStorage.setItem('images', JSON.stringify(json));
+          this.localStorageService.uploadImage(base64String, head);
           this.router.navigate(['/gallery']);
         };
         reader.readAsDataURL(file);
