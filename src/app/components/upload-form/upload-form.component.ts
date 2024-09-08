@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-upload-form',
@@ -39,11 +40,12 @@ export class UploadFormComponent {
 
           this.localStorageService.uploadImage(base64String, head);
           this.router.navigate(['/gallery']);
+          toast.success('Image uploaded successfully');
         };
         reader.readAsDataURL(file);
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      toast.error('Error uploading file');
     }
   }
 

@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { ImageDetailComponent } from '../image-detail/image-detail.component';
 import { filter } from 'rxjs';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-gallery',
@@ -73,5 +74,6 @@ export class GalleryComponent implements OnInit {
         src: `${img.mimeType},${img.body}`,
       })
     );
+    toast.success('Image deleted successfully');
   }
 }
